@@ -21,7 +21,7 @@ describe('Test Express only', function() {
         }
 
         var server = app.listen(20000, function() {
-            console.log('SPHP Server started on port 20000 with Doc-Root ' + doc_root);
+            console.log('SPHP Server started on port 20000 with Doc-Root ' + options.docRoot);
             serving = true;
         });
 
