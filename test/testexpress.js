@@ -61,7 +61,7 @@ describe('Test Express only', function() {
             console.log('CATCHED');
             if (originalException) process.listeners('uncaughtException').push(originalException);
             expect(err).to.be.an.instanceof(Error);
-            expect(err.message).to.be.equal("PHP engine 'Invalid_PHP_engine' failed to start.");
+            expect(err.message).to.be.equal("PHP engine failed to start (Invalid_PHP_engine)");
             expect(counter).to.be.equal(0);
             done();
         });
