@@ -12,11 +12,12 @@ describe('Test Express only', function() {
     before('Setup Server', function (_done) {
         this.timeout(600000); // because of first install from npm
 
-        var doc_root = __dirname + path.sep + 'doc_root';
         var app = express();
+        var options = {};
+        options.docRoot = __dirname + path.sep + 'doc_root';
         if (process.env.PHP_PATH && process.env.PHP_PATH !== "") {
-            sphp.setOptions({docRoot: doc_root, cgiEngine: process.env.PHP_PATH});
-            console.log('SPHP Use cgiEngine ' + sphp.cgiEngine);
+            options.cgiEngine = process.env.PHP_PATH;
+            console.log('SPHP Use cgiEngine ' + options.cgiEngine);
         }
 
         var server = app.listen(20000, function() {
@@ -24,8 +25,8 @@ describe('Test Express only', function() {
             serving = true;
         });
 
-        app.use(sphp.express(doc_root));
-        app.use(express.static(doc_root));
+        app.use(sphp.express(options));
+        app.use(express.static(options.docRoot));
 
         _done();
     });
@@ -50,6 +51,22 @@ describe('Test Express only', function() {
             expect(response.statusCode).to.equal(200);
             done();
         });
+    });
+
+    it('Test exception from setOptions', function (done) {
+        var errorHandled = false;
+        var originalException = process.listeners('uncaughtException').pop();
+        if (originalException) process.removeListener('uncaughtException', originalException);
+        process.once("uncaughtException", function (err) {
+            console.log('CATCHED');
+            if (originalException) process.listeners('uncaughtException').push(originalException);
+            expect(err).to.be.an.instanceof(Error);
+            expect(err.message).to.be.equal("PHP engine 'Invalid_PHP_engine' failed to start.");
+            expect(counter).to.be.equal(0);
+            done();
+        });
+
+        sphp.setOptions({cgiEngine: 'Invalid_PHP_engine'});
     });
 
     after('Stop Server', function (done) {
