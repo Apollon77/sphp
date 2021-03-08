@@ -30,7 +30,7 @@
     "express-session": "^1",
     "body-parser": "^1",
     "ws": "^3",
-    "mocha": "^4.1.0",
+    "mocha": "^8.3.1",
     "chai": "^4.1.2",
     "request": "^2.69.0"
   },
